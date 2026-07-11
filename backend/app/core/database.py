@@ -101,8 +101,5 @@ def get_db() -> Generator[Session, None, None]:
 
 
 def init_db() -> None:
-    """
-    Import all ORM models so metadata is fully registered.
-    Schema creation is handled exclusively via Alembic migrations.
-    """
-    import app.models  # noqa: F401
+    import app.models
+    Base.metadata.create_all(bind=engine)
