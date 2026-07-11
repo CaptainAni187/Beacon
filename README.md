@@ -1,135 +1,307 @@
 # Beacon
 
-A production-quality, full-stack real-time messaging platform built for scalability, maintainability, and enterprise-grade reliability.
+A production-ready, full-stack real-time messaging platform inspired by Signal and WhatsApp. Beacon is built with a modern **FastAPI + Next.js** architecture, supporting authentication, real-time messaging, group conversations, contacts, stories, media uploads, and WebSockets.
 
-## Project Overview
+---
 
-Beacon is a modern messaging application featuring real-time chat, group conversations, contact management, and rich user settings. This repository contains the foundational architecture — ready for incremental feature development.
+## Features
+
+- JWT Authentication
+- Email OTP verification (mock OTP for development)
+- Real-time messaging via WebSockets
+- One-to-one conversations
+- Group chats
+- Contact management
+- Stories
+- File & media uploads
+- User profiles and avatars
+- Read receipts
+- Conversation management
+- SQLite database with Alembic migrations
+- Automatic database migrations on startup
+- Production deployment with Railway and Vercel
+
+---
 
 ## Architecture
 
-```
-beacon/
-├── frontend/     # Next.js App Router client
-├── backend/      # FastAPI REST + WebSocket server
-└── docs/         # Architecture and design documentation
+```text
+Beacon/
+├── frontend/          # Next.js 15 App Router
+├── backend/           # FastAPI backend
+├── docs/              # Documentation
+└── README.md
 ```
 
-See [docs/architecture.md](./docs/architecture.md) for detailed system design.
+---
 
 ## Tech Stack
 
-| Layer     | Technologies                                              |
-|-----------|-----------------------------------------------------------|
-| Frontend  | Next.js, TypeScript, TailwindCSS, Zustand, React Hook Form, Axios |
-| Backend   | FastAPI, Python, Pydantic, SQLAlchemy (planned)           |
-| Database  | SQLite (planned)                                          |
-| Realtime  | WebSockets (planned)                                      |
-| Auth      | JWT (planned)                                             |
+| Layer | Technology |
+|--------|------------|
+| Frontend | Next.js 15, React, TypeScript |
+| Styling | Tailwind CSS |
+| State Management | Zustand |
+| Forms | React Hook Form |
+| API Client | Axios |
+| Backend | FastAPI |
+| ORM | SQLAlchemy 2.0 |
+| Validation | Pydantic v2 |
+| Database | SQLite |
+| Database Migrations | Alembic |
+| Authentication | JWT |
+| Password Hashing | Passlib + bcrypt |
+| Realtime | WebSockets |
+| Deployment | Railway + Vercel |
 
-## Folder Structure
+---
 
-```
-beacon/
+## Project Structure
+
+```text
+Beacon/
+│
 ├── frontend/
-│   ├── app/                    # Next.js App Router pages and layouts
-│   ├── components/             # UI, auth, chat, group, contacts, shared
-│   ├── hooks/                  # Custom React hooks
-│   ├── lib/                    # API client, socket, auth utilities
-│   ├── store/                  # Zustand state stores
-│   ├── types/                  # TypeScript type definitions
-│   └── public/                 # Static assets
+│   ├── app/
+│   ├── components/
+│   ├── hooks/
+│   ├── lib/
+│   ├── providers/
+│   ├── store/
+│   ├── styles/
+│   └── types/
+│
 ├── backend/
-│   └── app/
-│       ├── routers/            # FastAPI route handlers
-│       ├── services/           # Business logic layer
-│       ├── websocket/          # WebSocket connection management
-│       ├── auth/               # JWT and dependency injection
-│       ├── models/             # SQLAlchemy models (planned)
-│       ├── schemas/            # Pydantic schemas (planned)
-│       └── seed/               # Database seeding utilities
+│   ├── alembic/
+│   ├── app/
+│   │   ├── core/
+│   │   ├── features/
+│   │   ├── models/
+│   │   ├── seed/
+│   │   ├── utils/
+│   │   └── main.py
+│   ├── static/
+│   └── tests/
+│
 └── docs/
 ```
 
-## Development Setup
+---
 
-### Prerequisites
+# Development Setup
+
+## Prerequisites
 
 - Node.js 18+
 - Python 3.11+
-- npm or yarn
+- npm
 
-### Backend
+---
+
+## Backend
 
 ```bash
 cd backend
+
 python -m venv venv
-source venv/bin/activate   # Windows: venv\Scripts\activate
+
+# macOS / Linux
+source venv/bin/activate
+
+# Windows
+venv\Scripts\activate
+
 pip install -r requirements.txt
+
 cp .env.example .env
-uvicorn app.main:app --reload --port 8000
+
+alembic upgrade head
+
+uvicorn app.main:app --reload
 ```
 
-API docs available at [http://localhost:8000/docs](http://localhost:8000/docs).
+Swagger Documentation:
 
-### Demo Accounts
+```
+http://localhost:8000/docs
+```
 
-The backend automatically runs Alembic migrations and seeds a fresh SQLite
-database on startup. Use any of these demo accounts to log in immediately:
+---
 
-| User    | Email                 | Password      |
-|---------|-----------------------|---------------|
-| Alice   | `alice@example.com`   | `password123` |
-| Bob     | `bob@example.com`     | `password123` |
-| Charlie | `charlie@example.com` | `password123` |
-| Diana   | `diana@example.com`   | `password123` |
-| Eve     | `eve@example.com`     | `password123` |
-
-Seed data includes sample contacts, direct conversations, a group conversation,
-messages, and delivery/read statuses so the inbox is populated after login.
-
-### Frontend
+## Frontend
 
 ```bash
 cd frontend
+
 npm install
+
 npm run dev
 ```
 
-Application available at [http://localhost:3000](http://localhost:3000).
+Application:
 
-### Environment Variables
+```
+http://localhost:3000
+```
 
-Backend (`.env`):
+---
 
-| Variable           | Description              | Default                  |
-|--------------------|--------------------------|--------------------------|
-| `APP_NAME`         | Application name         | `Beacon`                 |
-| `DEBUG`            | Debug mode               | `true`                   |
-| `DATABASE_URL`     | Database connection URL  | `sqlite:///./beacon.db`  |
-| `SECRET_KEY`       | JWT signing key          | (change in production)   |
-| `CORS_ORIGINS`     | Allowed CORS origins     | `http://localhost:3000`  |
+# Environment Variables
 
-Frontend (`.env.local`):
+## Backend (.env)
 
-| Variable                  | Description        | Default                  |
-|---------------------------|--------------------|--------------------------|
-| `NEXT_PUBLIC_API_URL`     | Backend API URL    | `http://localhost:8000`  |
-| `NEXT_PUBLIC_WS_URL`      | WebSocket URL      | `ws://localhost:8000/ws` |
+```env
+APP_NAME=Beacon
 
-## Future Roadmap
+DEBUG=true
 
-- [ ] SQLAlchemy models and database migrations
-- [ ] JWT authentication (register, login, refresh tokens)
-- [ ] User profiles and avatar management
-- [ ] Contact management and discovery
-- [ ] Direct and group conversations
-- [ ] Real-time messaging via WebSockets
-- [ ] Typing indicators and read receipts
-- [ ] File attachments and media previews
-- [ ] Push notifications
-- [ ] End-to-end encryption (research phase)
+DATABASE_URL=sqlite:///./beacon.db
 
-## License
+SECRET_KEY=change-me
 
-MIT License — see [LICENSE](./LICENSE) for details.
+ACCESS_TOKEN_EXPIRE_MINUTES=30
+
+REFRESH_TOKEN_EXPIRE_DAYS=7
+
+MOCK_OTP_CODE=123456
+
+CORS_ORIGINS=http://localhost:3000
+
+PUBLIC_BASE_URL=http://localhost:8000
+
+UPLOAD_DIR=static/uploads
+```
+
+---
+
+## Frontend (.env.local)
+
+```env
+NEXT_PUBLIC_API_URL=http://localhost:8000
+```
+
+Production:
+
+```env
+NEXT_PUBLIC_API_URL=https://your-backend.up.railway.app
+```
+
+> `NEXT_PUBLIC_WS_URL` is optional. Beacon automatically derives the correct WebSocket URL from `NEXT_PUBLIC_API_URL`.
+
+---
+
+# Demo Accounts
+
+The backend automatically seeds demo users.
+
+| Email | Password |
+|--------|----------|
+| alice@example.com | password123 |
+| bob@example.com | password123 |
+| charlie@example.com | password123 |
+| diana@example.com | password123 |
+| eve@example.com | password123 |
+
+---
+
+# Running Tests
+
+```bash
+cd backend
+
+pytest
+```
+
+---
+
+# Deployment
+
+## Backend
+
+- Railway
+- FastAPI
+- SQLite
+- Alembic migrations execute automatically before application startup.
+
+## Frontend
+
+- Vercel
+
+The frontend automatically converts:
+
+```
+https://your-backend.up.railway.app
+```
+
+into
+
+```
+wss://your-backend.up.railway.app/ws
+```
+
+for WebSocket connections.
+
+---
+
+# API
+
+Interactive Documentation:
+
+```
+/docs
+```
+
+OpenAPI Schema:
+
+```
+/openapi.json
+```
+
+Health Check:
+
+```
+/health
+```
+
+---
+
+# Current Functionality
+
+- User Registration
+- Email OTP Verification
+- User Login
+- JWT Authentication
+- Token Refresh
+- User Profiles
+- Contacts
+- Direct Conversations
+- Group Conversations
+- Stories
+- File Uploads
+- Messaging
+- Read Receipts
+- Real-time WebSockets
+- Automatic Database Migrations
+- Automatic Database Seeding
+- Health Check Endpoint
+
+---
+
+# Roadmap
+
+- Voice & Video Calling
+- Push Notifications
+- End-to-End Encryption
+- Message Search
+- Reactions
+- Reply Threads
+- Message Editing
+- Message Deletion
+- Archived Chats
+- Multi-device Synchronization
+
+---
+
+# License
+
+This project is licensed under the **MIT License**. See the `LICENSE` file for details.
