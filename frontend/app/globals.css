@@ -1,0 +1,65 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --background: #ffffff;
+    --foreground: #0a0a0a;
+    --primary: #3a76f0;
+    --primary-foreground: #ffffff;
+    --secondary: #f0f0f0;
+    --secondary-foreground: #0f172a;
+    --muted: #f0f0f0;
+    --muted-foreground: #6b7280;
+    --accent: #e8e9eb;
+    --accent-foreground: #0f172a;
+    --destructive: #ef4444;
+    --destructive-foreground: #ffffff;
+    --border: #e2e2e4;
+    --ring: #3a76f0;
+    --card: #ffffff;
+    --card-foreground: #0a0a0a;
+    --radius: 0.5rem;
+    --font-sans: ui-sans-serif, system-ui, sans-serif;
+    --rail-bg: #f7f7f8;
+    --sidebar-bg: #f0f0f1;
+  }
+
+  .dark {
+    --background: #1b1c1f;
+    --foreground: #fafafa;
+    --primary: #506ecd;
+    --primary-foreground: #ffffff;
+    --secondary: #2c2d30;
+    --secondary-foreground: #f8fafc;
+    --muted: #2c2d30;
+    --muted-foreground: #9aa0a8;
+    --accent: #34353a;
+    --accent-foreground: #f8fafc;
+    --destructive: #dc2626;
+    --destructive-foreground: #ffffff;
+    --border: #303136;
+    --ring: #506ecd;
+    --card: #232427;
+    --card-foreground: #fafafa;
+    --rail-bg: #17181a;
+    --sidebar-bg: #202124;
+  }
+
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: var(--font-sans);
+  }
+}
+
+@layer utilities {
+  .scrollbar-thin {
+    scrollbar-width: thin;
+    scrollbar-color: var(--muted-foreground) transparent;
+  }
+}
