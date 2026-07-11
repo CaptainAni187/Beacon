@@ -25,6 +25,7 @@ from app.features.realtime.router import router as realtime_router
 from app.features.stories.router import router as stories_router
 from app.features.uploads.router import router as uploads_router
 from app.features.users.router import router as users_router
+from app.seed.seed import seed_if_needed
 
 settings = get_settings()
 
@@ -34,6 +35,7 @@ async def lifespan(_app: FastAPI) -> AsyncGenerator[None, None]:
     """Application startup and shutdown lifecycle handler."""
     # Startup
     run_migrations()
+    seed_if_needed()
     Path(settings.upload_dir).mkdir(parents=True, exist_ok=True)
     yield
     # Shutdown — cleanup resources here if needed

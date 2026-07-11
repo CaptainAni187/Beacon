@@ -72,6 +72,22 @@ uvicorn app.main:app --reload --port 8000
 
 API docs available at [http://localhost:8000/docs](http://localhost:8000/docs).
 
+### Demo Accounts
+
+The backend automatically runs Alembic migrations and seeds a fresh SQLite
+database on startup. Use any of these demo accounts to log in immediately:
+
+| User    | Email                 | Password      |
+|---------|-----------------------|---------------|
+| Alice   | `alice@example.com`   | `password123` |
+| Bob     | `bob@example.com`     | `password123` |
+| Charlie | `charlie@example.com` | `password123` |
+| Diana   | `diana@example.com`   | `password123` |
+| Eve     | `eve@example.com`     | `password123` |
+
+Seed data includes sample contacts, direct conversations, a group conversation,
+messages, and delivery/read statuses so the inbox is populated after login.
+
 ### Frontend
 
 ```bash
