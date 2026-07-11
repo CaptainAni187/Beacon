@@ -14,7 +14,7 @@ from fastapi.middleware.cors import CORSMiddleware
 from fastapi.staticfiles import StaticFiles
 
 from app.core.config import get_settings
-from app.core.database import init_db
+from app.core.database import run_migrations
 from app.features.auth.router import router as auth_router
 from app.features.calls.router import router as calls_router
 from app.features.contacts.router import router as contacts_router
@@ -33,7 +33,7 @@ settings = get_settings()
 async def lifespan(_app: FastAPI) -> AsyncGenerator[None, None]:
     """Application startup and shutdown lifecycle handler."""
     # Startup
-    init_db()
+    run_migrations()
     Path(settings.upload_dir).mkdir(parents=True, exist_ok=True)
     yield
     # Shutdown — cleanup resources here if needed

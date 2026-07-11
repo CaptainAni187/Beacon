@@ -6,10 +6,14 @@ and shared mixins used by all ORM models.
 """
 
 from datetime import datetime
+from pathlib import Path
 from typing import Generator, Optional
 
+from alembic import command
+from alembic.config import Config
 from sqlalchemy import DateTime, MetaData, create_engine, event
 from sqlalchemy.engine import Engine
+from sqlalchemy.engine.url import make_url
 from sqlalchemy.orm import DeclarativeBase, Mapped, Session, mapped_column, sessionmaker
 from sqlalchemy.sql import func
 
@@ -66,6 +70,17 @@ class SoftDeleteMixin:
 
 settings = get_settings()
 
+
+def _ensure_sqlite_parent_dir(database_url: str) -> None:
+    """Create the parent directory for file-backed SQLite databases."""
+    url = make_url(database_url)
+    if url.drivername != "sqlite" or not url.database or url.database == ":memory:":
+        return
+    Path(url.database).expanduser().parent.mkdir(parents=True, exist_ok=True)
+
+
+_ensure_sqlite_parent_dir(settings.database_url)
+
 engine = create_engine(
     settings.database_url,
     connect_args={"check_same_thread": False} if "sqlite" in settings.database_url else {},
@@ -103,3 +118,12 @@ def get_db() -> Generator[Session, None, None]:
 def init_db() -> None:
     import app.models
     Base.metadata.create_all(bind=engine)
+
+
+def run_migrations() -> None:
+    """Upgrade the configured database to the latest Alembic revision."""
+    backend_dir = Path(__file__).resolve().parents[2]
+    alembic_cfg = Config(str(backend_dir / "alembic.ini"))
+    alembic_cfg.set_main_option("script_location", str(backend_dir / "alembic"))
+    alembic_cfg.set_main_option("sqlalchemy.url", settings.database_url)
+    command.upgrade(alembic_cfg, "head")
