@@ -3,6 +3,7 @@
 from functools import lru_cache
 from typing import List
 
+from pydantic import field_validator
 from pydantic_settings import BaseSettings, SettingsConfigDict
 
 
@@ -26,6 +27,16 @@ class Settings(BaseSettings):
     upload_dir: str = "static/uploads"
     max_upload_size_bytes: int = 25 * 1024 * 1024
     public_base_url: str = "http://localhost:8000"
+
+    @field_validator("database_url")
+    @classmethod
+    def normalize_database_url(cls, value: str) -> str:
+        """Accept common platform DATABASE_URL aliases supported by Railway/Heroku."""
+        if value.startswith("postgres://"):
+            return value.replace("postgres://", "postgresql+psycopg://", 1)
+        if value.startswith("postgresql://"):
+            return value.replace("postgresql://", "postgresql+psycopg://", 1)
+        return value
 
     @property
     def cors_origins_list(self) -> List[str]:
